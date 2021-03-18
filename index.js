@@ -1,19 +1,35 @@
 'use strict';
+const Bcrypt = require('bcrypt');
 const Hapi = require('@hapi/hapi');
 const Sessions = require('./services/sessions')
-// const os = require('os');
-// const fs = require('fs');
-// const path = require('path');
-// const venom = require('venom-bot');
+const User = require("./models/User");
+
+const validate = async (request, username, password) => {
+  const user = await  User.findOne({where: {userName: username}});
+    if (!user) {
+        return { credentials: null, isValid: false };
+    }
+    if(user && user.isValid === 0){
+      return { credentials: null, isValid: false};
+    }
+    const type = user.type.split(",");
+    if(!type.includes('whatsChats')){
+      return { credentials: null, isValid: false};
+    }
+    const isValid = await Bcrypt.compare(password, user.password);
+    const credentials = { id: user.id, name: user.name };
+    return { isValid, credentials };
+};
 
 
 const init = async () => {
   Sessions.startChat();
-  
     const server = Hapi.server({
-        port: 3000,
+        port: 5000,
         host: 'localhost'
     });
+    await server.register(require('@hapi/basic'));
+    server.auth.strategy('simple', 'basic', { validate });
     await server.register([
         {
           plugin: require("./routes/session"),

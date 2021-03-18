@@ -27,6 +27,7 @@ module.exports = class Sessions {
     }
 
     static async UpdateMsgBot(payload) {
+        Sessions.botMsg=  Sessions.botMsg|| []; //start array
         let botUser = await BotWhats.findOne({ where: { nameSessions: payload.number, activated: 1} });
         if(botUser){
             botUser.botJson = JSON.stringify(payload.botMsg)
@@ -68,6 +69,8 @@ module.exports = class Sessions {
             // console.log('client----new---',Sessions.botMsg[client.session])
             // console.log('message.body',message.body.toUpperCase())
             // console.log('--body',Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase()))
+            console.log('Sessions.botMsg',Sessions.botMsg)
+            console.log('toUpperCase()',message.body.toUpperCase())
             if (Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase())  && message.isGroupMsg === false) {
                 client.sendText(message.from, Sessions.botMsg[client.session][message.body.toUpperCase()]);
             }else if(message.isGroupMsg === false){

@@ -4,6 +4,7 @@ const pattern = /^([55]{2})+[0-9]{11}?$/;
 const Joi = require('joi');
 
 module.exports.sessionCreate = {
+    auth: 'simple',
     description: "create session",
     validate: {
         payload: Joi.object({
@@ -21,7 +22,13 @@ module.exports.sessionCreate = {
 
 }
 module.exports.sessionQrcode = {
-    // description: "post cnpj",
+    auth: 'simple',
+    description: "Get qr-code",
+    validate: {
+        payload: Joi.object({
+            number: Joi.string().regex(pattern)
+        })
+    },
     handler: async (req, h) => {
         let session = await Sessions.getQrcode(req.payload.number)
         // console.log('session',session.message)
