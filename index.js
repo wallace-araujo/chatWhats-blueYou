@@ -23,7 +23,7 @@ const validate = async (request, username, password) => {
 
 
 const init = async () => {
-  Sessions.startChat();
+    Sessions.startChat();
     const server = Hapi.server({
         port: 5000,
         host: 'localhost'
@@ -37,11 +37,19 @@ const init = async () => {
           routes: {
             prefix: "/session",
           },
-        },{
+        },
+        {
           plugin: require("./routes/bot"),
           options: {},
           routes: {
             prefix: "/bot",
+          },
+        },
+        {
+          plugin: require("./routes/message"),
+          options: {},
+          routes: {
+            prefix: "/message",
           },
         }
     ]);

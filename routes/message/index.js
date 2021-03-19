@@ -5,10 +5,10 @@ exports.plugin = {
         server.route([
             {
                 method: 'POST',
-                path: '/create',
-                options: handlers.botCreate
+                path: '/sendtext',
+                options: handlers.sendtext
             }
         ]);
     },
-    name: "bot",
+    name: "messages",
   };

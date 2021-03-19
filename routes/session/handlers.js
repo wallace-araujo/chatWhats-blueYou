@@ -7,38 +7,36 @@ module.exports.sessionCreate = {
     auth: 'simple',
     description: "create session",
     validate: {
-        payload: Joi.object({
-            number: Joi.string().regex(pattern)
+        params: Joi.object({
+            number: Joi.string().regex(pattern).required()
         })
     },
     handler: async (req, h) => {
-        let session = await Sessions.start(req.payload.number);
+        let session = await Sessions.start(req.params.number);
         const data = {
-            ...req.payload,
+            ...req.params,
             state:session.state
         }
         return data;
     }
-
 }
 module.exports.sessionQrcode = {
     auth: 'simple',
     description: "Get qr-code",
     validate: {
-        payload: Joi.object({
-            number: Joi.string().regex(pattern)
+        params: Joi.object({
+            number: Joi.string().regex(pattern).required()
         })
     },
     handler: async (req, h) => {
-        let session = await Sessions.getQrcode(req.payload.number)
-        // console.log('session',session.message)
+        let session = await Sessions.getQrcode(req.params.number)
         if(session.qrcode){
             session.qrcode = session.qrcode.replace('data:image/png;base64,', '');
             const imageBuffer = Buffer.from(session.qrcode, 'base64');
            return h.response(imageBuffer).type('image/png').bytes(imageBuffer.length).code(200);
         }else{
             return {
-                ...req.payload,
+                ...req.params,
                 state:session.message
             }
         }

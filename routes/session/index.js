@@ -4,17 +4,13 @@ exports.plugin = {
     register: async (server) => {
         server.route([
             {
-                method: 'POST',
-                path: '/create',
+                method: 'GET',
+                path: '/create/{number}',
                 options: handlers.sessionCreate
-                // handler: (request, h) => {
-                //     console.log(request.payload)
-                //     return 'Hello World! teste';
-                // }
             },
             {
-                method: 'POST',
-                path: '/qrcode',
+                method: 'GET',
+                path: '/qrcode/{number}',
                 options: handlers.sessionQrcode
             }
         ]);

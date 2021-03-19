@@ -47,30 +47,25 @@ module.exports = class Sessions {
             //create new session
             session = await Sessions.addSesssion(sessionName);
         } else if (["CLOSED"].includes(session.state)) { //restart session
-            // console.log("session.state == CLOSED");
-            // session.state = "STARTING";
-            // session.status = 'notLogged';
-            // session.client = Sessions.initSession(sessionName);
-            // Sessions.setup(sessionName);
+            console.log("session.state == CLOSED");
+            session.state = "STARTING";
+            session.status = 'notLogged';
+            session.client = Sessions.initSession(sessionName);
+            Sessions.setup(sessionName);
         } else if (["CONFLICT", "UNPAIRED", "UNLAUNCHED"].includes(session.state)) {
             // console.log("client.useHere()");
-            // session.client.then(client => {
-            //     client.useHere();
-            // });
+            session.client.then(client => {
+                client.useHere();
+            });
         } else {
             console.log("session.state: " ,session.state);
         }
         return session;
     } //start
 
-    static async onMessage(client,sessionName) {
+    // START onMessage
+    static async onMessage(client) {
         client.onMessage( async (message) => {
-            // console.log('client',client.session)
-            // console.log('client----new---',Sessions.botMsg[client.session])
-            // console.log('message.body',message.body.toUpperCase())
-            // console.log('--body',Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase()))
-            console.log('Sessions.botMsg',Sessions.botMsg)
-            console.log('toUpperCase()',message.body.toUpperCase())
             if (Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase())  && message.isGroupMsg === false) {
                 client.sendText(message.from, Sessions.botMsg[client.session][message.body.toUpperCase()]);
             }else if(message.isGroupMsg === false){
@@ -78,6 +73,16 @@ module.exports = class Sessions {
             }
         });
     }
+    static async onTyping(client,number,type){
+        console.log('number-->',number)
+        if(type){
+            await client.startTyping(number);
+        }else{
+            await client.stopTyping(number);
+        }
+    }
+    // END onMessage
+
     static async addSesssion(sessionName) {
         var newSession = {
             name: sessionName,
@@ -183,7 +188,6 @@ module.exports = class Sessions {
                 }//if CONNECTED
                 //console.log("session.state: " + state);
             }); //.then((client) => Sessions.startProcess(client));
-            
             //ouvinte..
             this.onMessage(client,sessionName);
         });
@@ -234,7 +238,6 @@ module.exports = class Sessions {
 
     static async getQrcode(sessionName) {
         var session = Sessions.getSession(sessionName);
-        //console.log('session',session)
         if (session) {
             //if (["UNPAIRED", "UNPAIRED_IDLE"].includes(session.state)) {
             if (["UNPAIRED_IDLE"].includes(session.state)) {
@@ -292,4 +295,10 @@ module.exports = class Sessions {
     //         return { result: "error", message: "NOTFOUND" };
     //     }
     // } //message
+
+
+    // Profile Functions
+
+
+
 }
