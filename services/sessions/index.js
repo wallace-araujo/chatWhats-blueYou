@@ -8,10 +8,14 @@ const venom = require('venom-bot');
 const axios = require('axios');
 const Whats= require("../../models/SessionsWhats");
 const BotWhats= require("../../models/BotWhats");
+const WebhookWhats= require("../../models/WebhookWhats");
 const whatServices = require("../bd/insert");
+const WebHooks = require('node-webhooks')
+
 module.exports = class Sessions {
     static async startChat() {
         await this.onMsgBot();
+        await this.onWebhook();
         const rownsWhats = await  Whats.findAll({where: {activated: 1}});
         rownsWhats.map((line) =>{
             //console.log(line.nameSessions)
@@ -25,6 +29,32 @@ module.exports = class Sessions {
             Sessions.botMsg[line.nameSessions] = JSON.parse(line.botJson) 
         });
     }
+
+    static async onWebhook() {
+        Sessions.webHooks = [];
+        Sessions.webHooks = new WebHooks({db: {}})
+        const hooks = {}
+        const rownsWebhook= await  WebhookWhats.findAll({where: {activated: 1}});
+        rownsWebhook.map((line) =>{
+            Sessions.webHooks.add(line.nameSessions, line.url)
+        });
+    }
+
+    static async setWebhook(payload) {
+        let webhook = await WebhookWhats.findOne({ where: { nameSessions: payload.number, activated: 1} });
+        if(webhook){
+            webhook.url = payload.webhook
+            webhook.save();
+        }else{
+            whatServices.setWebhookWhats(payload); 
+        }
+        Sessions.webHooks.add(payload.number, payload.webhook)
+    }
+
+    // static async Testesetwebhook() {
+    //     console.log('teste 0001')
+    //     Sessions.webHooks.trigger('5511956194230', {data: 123})
+    // }
 
     static async UpdateMsgBot(payload) {
         Sessions.botMsg=  Sessions.botMsg|| []; //start array
@@ -66,11 +96,13 @@ module.exports = class Sessions {
     // START onMessage
     static async onMessage(client) {
         client.onMessage( async (message) => {
-            if (Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase())  && message.isGroupMsg === false) {
+            console.log('message-->',message)
+            if (message.isGroupMsg === false && Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase())) {
                 client.sendText(message.from, Sessions.botMsg[client.session][message.body.toUpperCase()]);
             }else if(message.isGroupMsg === false){
                 client.sendText(message.from, Sessions.botMsg[client.session].default);
             }
+            Sessions.webHooks.trigger(client.session, {data: message.body})
         });
     }
     static async onTyping(client,number,type){
@@ -89,7 +121,7 @@ module.exports = class Sessions {
             qrcode: false,
             client: false,
             status: 'notLogged',
-            state: 'CONNECTED'
+            state: 'STARTING'
         }
         Sessions.sessions.push(newSession);
         // console.log("newSession.state: " + newSession.state);
@@ -193,6 +225,16 @@ module.exports = class Sessions {
         });
     } //setup
 
+    static async restartSession(sessionName) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+             await Sessions.closeSession(sessionName);
+            Sessions.start(sessionName);
+            return { result: "success" };
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    }
     static async closeSession(sessionName) {
         var session = Sessions.getSession(sessionName);
         if (session) { //só adiciona se não existir

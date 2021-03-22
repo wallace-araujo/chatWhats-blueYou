@@ -1,5 +1,6 @@
 const Whats = require("../../models/SessionsWhats");
 const BotWhats = require("../../models/BotWhats");
+const WebhookWhats = require("../../models/WebhookWhats");
 
 const createSession = async (response,id) => {
     const log = {
@@ -19,7 +20,17 @@ const createBotWhats = async (response) => {
     BotWhats.create(log);
 };
 
+
+const setWebhookWhats = async (response) => {
+    const log = {
+        nameSessions: response.number,
+        url: response.webhook
+    };
+    WebhookWhats.create(log);
+};
+
 module.exports = {
     createSession,
-    createBotWhats
+    createBotWhats,
+    setWebhookWhats
 };

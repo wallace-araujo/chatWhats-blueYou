@@ -29,6 +29,7 @@ module.exports.sessionQrcode = {
         })
     },
     handler: async (req, h) => {
+        //img ou base64
         let session = await Sessions.getQrcode(req.params.number)
         if(session.qrcode){
             session.qrcode = session.qrcode.replace('data:image/png;base64,', '');
@@ -41,6 +42,42 @@ module.exports.sessionQrcode = {
             }
         }
 
+    }
+
+}
+
+module.exports.sessionDisconnect= {
+    auth: 'simple',
+    description: "disconnect whats",
+    validate: {
+        params: Joi.object({
+            number: Joi.string().regex(pattern).required()
+        })
+    },
+    handler: async (req, h) => {
+        let session = await Sessions.closeSession(req.params.number);
+        return {
+            ...req.params,
+            ...session.message
+        }
+    }
+
+}
+
+module.exports.sessionRestart= {
+    auth: 'simple',
+    description: "disconnect whats",
+    validate: {
+        params: Joi.object({
+            number: Joi.string().regex(pattern).required()
+        })
+    },
+    handler: async (req, h) => {
+        let session = await Sessions.restartSession(req.params.number);
+        return {
+            ...req.params,
+            ...session.message
+        }
     }
 
 }

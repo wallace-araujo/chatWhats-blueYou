@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const db = require("../database/db");
 
 module.exports = db.sequelize.define(
-    'tb_sessionsWhats',
+    'tb_webhookWhats',
     {
       id: {
         type: Sequelize.INTEGER,
@@ -12,8 +12,8 @@ module.exports = db.sequelize.define(
       nameSessions: {
         type: Sequelize.STRING,
       },
-      sessionsJson: {
-        type: Sequelize.TEXT,
+      url: {
+        type: Sequelize.STRING,
       },
       idUser: {
         type: Sequelize.INTEGER,

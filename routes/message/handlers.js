@@ -20,3 +20,50 @@ module.exports.sendtext = {
     }
     
 }
+
+module.exports.setwebhook = {
+    auth: 'simple',
+    description: "set webhook",
+    validate: {
+        payload: Joi.object({
+            number: Joi.string().regex(pattern).required(),
+            webhook: Joi.string().required()
+        })
+    },
+    handler: async (req, h) => {
+        console.log(req.payload)
+        await Sessions.setWebhook(req.payload)
+        return {
+            result: "success",
+            ...req.payload
+        }
+    }
+    
+}
+
+
+// module.exports.testewebhook = {
+//     // auth: 'simple',
+//     description: "test",
+//     // validate: {
+//     //     payload: Joi.object({
+//     //         number: Joi.string().regex(pattern).required(),
+//     //         webhook: Joi.string().required()
+//     //     })
+//     // },
+//     handler: async (req, h) => {
+//         console.log('dfimmmmm',req.payload)
+//         return []
+//     }
+    
+// }
+
+// module.exports.teste2webhook = {
+//     auth: 'simple',
+//     description: "test",
+//     handler: async (req, h) => {
+//         Sessions.Testesetwebhook() 
+//         return []
+//     }
+    
+// }

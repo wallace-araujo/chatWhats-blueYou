@@ -12,6 +12,16 @@ exports.plugin = {
                 method: 'GET',
                 path: '/qrcode/{number}',
                 options: handlers.sessionQrcode
+            },
+            {
+                method: 'GET',
+                path: '/disconnect/{number}',
+                options: handlers.sessionDisconnect
+            },
+            {
+                method: 'GET',
+                path: '/restart/{number}',
+                options: handlers.sessionRestart
             }
         ]);
     },
