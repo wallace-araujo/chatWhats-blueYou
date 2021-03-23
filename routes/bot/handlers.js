@@ -5,7 +5,7 @@ const Joi = require('joi');
 module.exports.botCreate = {
     auth: 'simple',
     description: "Definir fluxo para bauto resposta",
-    tags: ['api'],
+    tags: ['C:Auto-resposta','api'],
     validate: {
       headers: Joi.object({
           'authorization': Joi.string().required()

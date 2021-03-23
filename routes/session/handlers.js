@@ -7,7 +7,12 @@ module.exports.sessionCreate = {
     auth: 'simple',
     description: "Iniciando API",
     // notes: ' Iniciando API',
-    tags: ['api'],
+    tags: ['A:Configurações','api'],
+    plugins: {
+        'hapi-swagger': {
+            order: 1
+        }
+    },
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()
@@ -31,7 +36,7 @@ module.exports.sessionCreate = {
 module.exports.sessionQrcode = {
     auth: 'simple',
     description: "Obter QrCode",
-    tags: ['api'],
+    tags: ['A:Configurações','api'],
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()
@@ -63,7 +68,7 @@ module.exports.sessionQrcode = {
 module.exports.sessionDisconnect= {
     auth: 'simple',
     description: "Desconectar API",
-    tags: ['api'],
+    tags: ['A:Configurações','api'],
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()
@@ -87,7 +92,7 @@ module.exports.sessionDisconnect= {
 module.exports.sessionRestart= {
     auth: 'simple',
     description: "Reiniciar Serviço",
-    tags: ['api'],
+    tags: ['A:Configurações','api'],
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()

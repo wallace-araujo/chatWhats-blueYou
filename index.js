@@ -26,7 +26,7 @@ const validate = async (request, username, password) => {
 
 
 const init = async () => {
-   Sessions.startChat();
+  // Sessions.startChat();
     const server = Hapi.server({
         port: 5000,
         host: 'localhost'
@@ -35,6 +35,7 @@ const init = async () => {
     const swaggerOptions = {
       info: {
         title: 'API Documentation Whats',
+        description :'Permite a integração do WhatsApp com qualquer aplicação por meio de requisiçõe',
         version: '1.0.0',
         contact: {
           'name': 'Wallace araujo',
@@ -42,7 +43,16 @@ const init = async () => {
         },
       },
       schemes: ['https'],
-      sortEndpoints:'ordered'
+      tags: [{
+        'name': 'A:Configurações',
+        'description': 'Configuração inicial'
+      },{
+        'name': 'B:Envios',
+      },{
+        'name': 'C:Auto-resposta',
+      }],
+      grouping: 'tags'
+      // sortEndpoints:'ordered',
     };
     await server.register([
       Inert,

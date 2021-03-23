@@ -2,11 +2,17 @@
 const Sessions = require('../../services/sessions')
 const pattern = /^([55]{2})+[0-9]{11}?$/;
 const Joi = require('joi');
+const HapiSwagger = require('hapi-swagger');
 
 module.exports.sendtext = {
     auth: 'simple',
     description: "Enviar Mensagem",
-    tags: ['api'],
+    tags: ['B:Envios','api'],
+    plugins: {
+        'hapi-swagger': {
+            order: 2
+        }
+    },
     validate: {
         headers: Joi.object({
             'authorization': Joi.string().required()
@@ -28,7 +34,7 @@ module.exports.sendtext = {
 module.exports.setwebhook = {
     auth: 'simple',
     description: "Definir Webhook",
-    tags: ['api'],
+    tags: ['B:Envios','api'],
     validate: {
         headers: Joi.object({
             'authorization': Joi.string().required()
