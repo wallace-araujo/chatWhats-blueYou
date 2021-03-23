@@ -5,8 +5,12 @@ const Joi = require('joi');
 
 module.exports.sendtext = {
     auth: 'simple',
-    description: "send text msg",
+    description: "Enviar Mensagem",
+    tags: ['api'],
     validate: {
+        headers: Joi.object({
+            'authorization': Joi.string().required()
+        }).unknown(),
         payload: Joi.object({
             number: Joi.string().regex(pattern).required(),
             clientNumber: Joi.string().regex(pattern).required(),
@@ -23,15 +27,23 @@ module.exports.sendtext = {
 
 module.exports.setwebhook = {
     auth: 'simple',
-    description: "set webhook",
+    description: "Definir Webhook",
+    tags: ['api'],
     validate: {
+        headers: Joi.object({
+            'authorization': Joi.string().required()
+        }).unknown(),
         payload: Joi.object({
-            number: Joi.string().regex(pattern).required(),
+            number: Joi.string().regex(pattern).required()
+            .example('5511900000000')
+            .description('Número do WhatsApp que será usado na conexão.'),
             webhook: Joi.string().required()
+            .example('https://www.teste.com.br/webhook.php')
+            .description('url para receber msg. ')
         })
     },
     handler: async (req, h) => {
-        console.log(req.payload)
+        //console.log(req.payload)
         await Sessions.setWebhook(req.payload)
         return {
             result: "success",

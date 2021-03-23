@@ -10,5 +10,5 @@ exports.plugin = {
             }
         ]);
     },
-    name: "bot",
+    name: "auto reposta",
   };

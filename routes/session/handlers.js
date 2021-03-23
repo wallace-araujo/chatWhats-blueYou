@@ -4,13 +4,26 @@ const pattern = /^([55]{2})+[0-9]{11}?$/;
 const Joi = require('joi');
 
 module.exports.sessionCreate = {
+    plugins: {
+        'hapi-swagger': {
+            order: 1
+        }
+    },
     auth: 'simple',
-    description: "create session",
+    description: "Iniciando API",
+    // notes: ' Iniciando API',
+    tags: ['api'],
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()
-        })
+            .example('5511900000000')
+            .description('Número do WhatsApp que será usado na conexão.'),
+        }),
+        headers: Joi.object({
+            'authorization': Joi.string().required()
+        }).unknown()
     },
+   // response: {schema: responseModel}
     handler: async (req, h) => {
         let session = await Sessions.start(req.params.number);
         const data = {
@@ -21,12 +34,23 @@ module.exports.sessionCreate = {
     }
 }
 module.exports.sessionQrcode = {
+    plugins: {
+        'hapi-swagger': {
+            order: 2
+        }
+    },
     auth: 'simple',
-    description: "Get qr-code",
+    description: "Obter QrCode",
+    tags: ['api'],
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()
-        })
+            .example('5511900000000')
+            .description('Número do WhatsApp que será usado na conexão.'),
+        }),
+        headers: Joi.object({
+            'authorization': Joi.string().required()
+        }).unknown()
     },
     handler: async (req, h) => {
         //img ou base64
@@ -47,12 +71,23 @@ module.exports.sessionQrcode = {
 }
 
 module.exports.sessionDisconnect= {
+    plugins: {
+        'hapi-swagger': {
+            order: 3
+        }
+    },
     auth: 'simple',
-    description: "disconnect whats",
+    description: "Desconectar API",
+    tags: ['api'],
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()
-        })
+            .example('5511900000000')
+            .description('Número do WhatsApp que será usado na conexão.'),
+        }),
+        headers: Joi.object({
+            'authorization': Joi.string().required()
+        }).unknown()
     },
     handler: async (req, h) => {
         let session = await Sessions.closeSession(req.params.number);
@@ -65,12 +100,23 @@ module.exports.sessionDisconnect= {
 }
 
 module.exports.sessionRestart= {
+    plugins: {
+        'hapi-swagger': {
+            order: 4
+        }
+    },
     auth: 'simple',
-    description: "disconnect whats",
+    description: "Reiniciar Serviço",
+    tags: ['api'],
     validate: {
         params: Joi.object({
             number: Joi.string().regex(pattern).required()
-        })
+            .example('5511900000000')
+            .description('Número do WhatsApp que será usado na conexão.'),
+        }),
+        headers: Joi.object({
+            'authorization': Joi.string().required()
+        }).unknown()
     },
     handler: async (req, h) => {
         let session = await Sessions.restartSession(req.params.number);

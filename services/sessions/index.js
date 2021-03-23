@@ -20,7 +20,6 @@ module.exports = class Sessions {
         await this.onWebhook();
         const rownsWhats = await  Whats.findAll({where: {activated: 1}});
         rownsWhats.map((line) =>{
-            //console.log(line.nameSessions)
             this.start(line.nameSessions)
         });
     }
