@@ -41,7 +41,8 @@ const init = async () => {
           'email': 'wallace.araujo.urbano@gmail.com'
         },
       },
-      sortEndpoints: 'ordered',
+      schemes: ['https'],
+      sortEndpoints:'ordered'
     };
     await server.register([
       Inert,
