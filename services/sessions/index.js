@@ -3,6 +3,8 @@
 
 const os = require('os');
 const fs = require('fs');
+const mime = require('mime-types');
+
 const path = require('path');
 const venom = require('venom-bot');
 const axios = require('axios');
@@ -96,17 +98,45 @@ module.exports = class Sessions {
     // START onMessage
     static async onMessage(client) {
         client.onMessage( async (message) => {
-            console.log('message-->',message)
+            //console.log('message-->',message)
+            this.onTyping(client,message.from,true)
             if (message.isGroupMsg === false && Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase())) {
                 client.sendText(message.from, Sessions.botMsg[client.session][message.body.toUpperCase()]);
             }else if(message.isGroupMsg === false){
                 client.sendText(message.from, Sessions.botMsg[client.session].default);
             }
-            Sessions.webHooks.trigger(client.session, {data: message.body})
+            this.sendWebHooks(client,message)
         });
     }
+
+    static async sendWebHooks(client,payload){
+        //console.log('payload',payload)
+        let imgBase64 = null
+        if (payload.isMedia === true || payload.isMMS === true) {
+            const buffer = await client.decryptFile(payload);
+            imgBase64= buffer.toString('base64');
+        }
+        const senData ={
+            token: payload.id,
+            id: payload.id,
+            timestamp: payload.timestamp,
+            type: payload.type,
+            from: payload.from.replace(/[^0-9]/g,''),
+            content: payload.body,
+            pushname: payload.sender.pushname,
+            isMyContact: payload.sender.isMyContact,
+            profilePic: payload.sender.profilePicThumbObj ?payload.sender.profilePicThumbObj.imgFull:false,
+            base64: imgBase64,
+            mimetype: payload.mimetype?payload.mimetype:false,
+            isGroupMsg: payload.isGroupMsg,
+            isMedia: payload.isMedia,
+            isBusiness: payload.sender.isBusiness
+        }
+       Sessions.webHooks.trigger(client.session, {data: senData})
+    }
+
     static async onTyping(client,number,type){
-        console.log('number-->',number)
+        //console.log('number-->',number)
         if(type){
             await client.startTyping(number);
         }else{
