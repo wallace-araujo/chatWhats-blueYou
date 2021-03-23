@@ -4,11 +4,6 @@ const pattern = /^([55]{2})+[0-9]{11}?$/;
 const Joi = require('joi');
 
 module.exports.sessionCreate = {
-    plugins: {
-        'hapi-swagger': {
-            order: 1
-        }
-    },
     auth: 'simple',
     description: "Iniciando API",
     // notes: ' Iniciando API',
@@ -34,11 +29,6 @@ module.exports.sessionCreate = {
     }
 }
 module.exports.sessionQrcode = {
-    plugins: {
-        'hapi-swagger': {
-            order: 2
-        }
-    },
     auth: 'simple',
     description: "Obter QrCode",
     tags: ['api'],
@@ -71,11 +61,6 @@ module.exports.sessionQrcode = {
 }
 
 module.exports.sessionDisconnect= {
-    plugins: {
-        'hapi-swagger': {
-            order: 3
-        }
-    },
     auth: 'simple',
     description: "Desconectar API",
     tags: ['api'],
@@ -100,11 +85,6 @@ module.exports.sessionDisconnect= {
 }
 
 module.exports.sessionRestart= {
-    plugins: {
-        'hapi-swagger': {
-            order: 4
-        }
-    },
     auth: 'simple',
     description: "Reiniciar Serviço",
     tags: ['api'],

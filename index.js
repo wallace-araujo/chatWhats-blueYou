@@ -26,7 +26,7 @@ const validate = async (request, username, password) => {
 
 
 const init = async () => {
-   // Sessions.startChat();
+   Sessions.startChat();
     const server = Hapi.server({
         port: 5000,
         host: 'localhost'

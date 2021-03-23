@@ -3,11 +3,6 @@ const pattern = /^([55]{2})+[0-9]{11}?$/;
 const Joi = require('joi');
 
 module.exports.botCreate = {
-  plugins: {
-    'hapi-swagger': {
-        order: 5
-    }
-},
     auth: 'simple',
     description: "Definir fluxo para bauto resposta",
     tags: ['api'],
