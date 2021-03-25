@@ -6,21 +6,37 @@ exports.plugin = {
             {
                 method: 'POST',
                 path: '/sendtext',
-                options: handlers.sendtext
+                options: handlers.sendText
             },
             {
                 method: 'POST',
                 path: '/setwebhook',
-                options: handlers.setwebhook
+                options: handlers.setWebhook
+            },
+            {
+                method: 'POST',
+                path: '/sendfile',
+                options: handlers.sendFile
+            },
+            {
+                method: 'POST',
+                path: '/sendlocation',
+                options: handlers.sendLocation
+            },
+            {
+                method: 'POST',
+                path: '/sendcontact',
+                options: handlers.sendContact
+            },
+            {
+                method: 'POST',
+                path: '/sendlink',
+                options: handlers.sendLink
             }
-            // {
+            // ,{
             //     method: 'POST',
-            //     path: '/teste',
-            //     options: handlers.testewebhook
-            // },{
-            //     method: 'POST',
-            //     path: '/teste2',
-            //     options: handlers.teste2webhook
+            //     path: '/sendaudio',
+            //     options: handlers.sendAudio
             // }
         ]);
     },

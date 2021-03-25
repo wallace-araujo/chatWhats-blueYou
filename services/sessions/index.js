@@ -97,9 +97,9 @@ module.exports = class Sessions {
     // START onMessage
     static async onMessage(client) {
         client.onMessage( async (message) => {
-            //console.log('message-->',message)
+            console.log('message-->',message)
             this.onTyping(client,message.from,true)
-            if (message.isGroupMsg === false && Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase())) {
+            if ( message.type !== 'sticker' && message.isGroupMsg === false && Sessions.botMsg[client.session].hasOwnProperty(message.body.toUpperCase())) {
                 client.sendText(message.from, Sessions.botMsg[client.session][message.body.toUpperCase()]);
             }else if(message.isGroupMsg === false){
                 client.sendText(message.from, Sessions.botMsg[client.session].default);
@@ -347,16 +347,83 @@ module.exports = class Sessions {
         }
     } //message
 
-    // static async sendFile(sessionName, number, base64Data, fileName, caption) {
+    static async sendFile(sessionName, number, base64Data, fileName, caption) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+            if (session.state == "CONNECTED") {
+                var resultSendFile = await session.client.then(async (client) => {
+                    var folderName = fs.mkdtempSync(path.join(os.tmpdir(), session.name + '-'));
+                    var filePath = path.join(folderName, fileName);
+                    fs.writeFileSync(filePath, base64Data, 'base64');
+                    console.log(filePath);
+                    return await client.sendFile(number + '@c.us', filePath, fileName, caption);
+                }); //client.then(
+                return { result: "success" };
+            } else {
+                return { result: "error", message: session.state };
+            }
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    } //message
+
+
+
+    static async sendLocation(sessionName, number, latitude, longitude, caption) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+            if (session.state == "CONNECTED") {
+                var resultSendFile = await session.client.then(async (client) => {
+                    return await client.sendLocation(number+'@c.us', latitude, longitude, caption)
+                }); //client.then(
+                return { result: "success" };
+            } else {
+                return { result: "error", message: session.state };
+            }
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    } // Send location
+
+    static async sendContact(sessionName, number, contact, name) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+            if (session.state == "CONNECTED") {
+                var resultSendFile = await session.client.then(async (client) => {
+                    return await client.sendContactVcard(number+'@c.us', contact+'@c.us', name)
+                }); //client.then(
+                return { result: "success" };
+            } else {
+                return { result: "error", message: session.state };
+            }
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    } // Send contact
+ 
+
+    static async sendLink(sessionName, number, text, link) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+            if (session.state == "CONNECTED") {
+                var resultSendFile = await session.client.then(async (client) => {
+                    return await client.sendLinkPreview(number+'@c.us',link,text)
+                }); //client.then(
+                return { result: "success" };
+            } else {
+                return { result: "error", message: session.state };
+            }
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    } // send link Preview
+
+    // static async sendAudio(sessionName, number, base64MP3) {
     //     var session = Sessions.getSession(sessionName);
     //     if (session) {
     //         if (session.state == "CONNECTED") {
     //             var resultSendFile = await session.client.then(async (client) => {
-    //                 var folderName = fs.mkdtempSync(path.join(os.tmpdir(), session.name + '-'));
-    //                 var filePath = path.join(folderName, fileName);
-    //                 fs.writeFileSync(filePath, base64Data, 'base64');
-    //                 console.log(filePath);
-    //                 return await client.sendFile(number + '@c.us', filePath, fileName, caption);
+    //                 return await client.sendVoiceBase64(number+'@c.us',base64MP3)
     //             }); //client.then(
     //             return { result: "success" };
     //         } else {
@@ -365,11 +432,55 @@ module.exports = class Sessions {
     //     } else {
     //         return { result: "error", message: "NOTFOUND" };
     //     }
-    // } //message
+    // } // Send audio file base64
 
 
-    // Profile Functions
+    static async blockcontact(sessionName, number) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+            if (session.state == "CONNECTED") {
+                var resultSendFile = await session.client.then(async (client) => {
+                    return await client.blockContact(number+'@c.us')
+                }); //client.then(
+                return { result: "success" };
+            } else {
+                return { result: "error", message: session.state };
+            }
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    } // Blocks a user (returns true if it works)
 
+    static async unblockContact(sessionName, number) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+            if (session.state == "CONNECTED") {
+                var resultSendFile = await session.client.then(async (client) => {
+                    return await client.unblockContact(number+'@c.us')
+                }); //client.then(
+                return { result: "success" };
+            } else {
+                return { result: "error", message: session.state };
+            }
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    } // Unlocks contacts (returns true if it works)
 
+    static async getAllChats(sessionName, number) {
+        var session = Sessions.getSession(sessionName);
+        if (session) {
+            if (session.state == "CONNECTED") {
+                var resultSendFile = await session.client.then(async (client) => {
+                    return await client.getAllChats()
+                }); //client.then(
+                return { ...resultSendFile,result: "success" };
+            } else {
+                return { result: "error", message: session.state };
+            }
+        } else {
+            return { result: "error", message: "NOTFOUND" };
+        }
+    } // Retrieve all chats
 
 }

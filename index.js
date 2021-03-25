@@ -50,6 +50,8 @@ const init = async () => {
         'name': 'B:Envios',
       },{
         'name': 'C:Auto-resposta',
+      },{
+        'name': 'D:Ações',
       }],
       grouping: 'tags'
       // sortEndpoints:'ordered',
@@ -86,6 +88,13 @@ const init = async () => {
           options: {},
           routes: {
             prefix: "/message",
+          },
+        },
+        {
+          plugin: require("./routes/actions"),
+          options: {},
+          routes: {
+            prefix: "/actions",
           },
         }
     ]);
