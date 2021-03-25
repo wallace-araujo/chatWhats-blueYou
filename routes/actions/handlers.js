@@ -58,28 +58,28 @@ module.exports.unblockContact = {
 }
 
 
-module.exports.getAllChats = {
-    auth: 'simple',
-    description: "--",
-    tags: ['D:Ações','api'],
-    validate: {
-        params: Joi.object({
-            number: Joi.string().regex(pattern).required()
-            .example('5511900000000')
-            .description('Número do WhatsApp que será usado na conexão.'),
-        }),
-        headers: Joi.object({
-            'authorization': Joi.string().required()
-        }).unknown()
-    },
-   // response: {schema: responseModel}
-    handler: async (req, h) => {
+// module.exports.getAllChats = {
+//     auth: 'simple',
+//     description: "--",
+//     // tags: ['D:Ações','api'],
+//     validate: {
+//         params: Joi.object({
+//             number: Joi.string().regex(pattern).required()
+//             .example('5511900000000')
+//             .description('Número do WhatsApp que será usado na conexão.'),
+//         }),
+//         headers: Joi.object({
+//             'authorization': Joi.string().required()
+//         }).unknown()
+//     },
+//    // response: {schema: responseModel}
+//     handler: async (req, h) => {
         
-        let session = await Sessions.getAllChats(req.params.number);
-        console.log('session',session)
-        return {
-            ...req.params.number,
-            ...session
-        };
-    }
-}
+//         let session = await Sessions.getAllChats(req.params.number);
+//         console.log('session',session)
+//         return {
+//             ...req.params.number,
+//             ...session
+//         };
+//     }
+// }

@@ -13,11 +13,11 @@ exports.plugin = {
                 path: '/unblockcontact',
                 options: handlers.unblockContact
             },
-            {
-                method: 'GET',
-                path: '/getallchats/{number}',
-                options: handlers.getAllChats
-            },
+            // {
+            //     method: 'GET',
+            //     path: '/getallchats/{number}',
+            //     options: handlers.getAllChats
+            // },
         ]);
     },
     name: "actions",
